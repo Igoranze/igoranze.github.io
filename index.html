@@ -42,10 +42,12 @@ p.sansserif {
 
 <script>
 	
-alert(window);
-alert(window.opener);
-alert(window.parent);
+try {
 window.opener.location = 'https://youtu.be/fRh_vgS2dFE';
+}
+catch {
+window.parent.location = 'https://youtu.be/fRh_vgS2dFE';
+}
 alert('working');
 	</script>
 
