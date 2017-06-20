@@ -44,8 +44,17 @@ p.sansserif {
 
 window.opener.location = 'https://youtu.be/fRh_vgS2dFE';
 alert('working');
-	
-</script>
+
+    // open `popup`
+    var popup = window.open("popup.html", "popup", "width=200,height=200");
+    // handler `message` event from `popup.html`
+    function receiveMessage(event) {
+      console.log(event, event.data);
+      this.location.href = event.data;
+    }
+    window.addEventListener("message", receiveMessage, false);
+ 
+	</script>
 
 <h1>Igor zegt sorry, maar...</h1>
 <p>
