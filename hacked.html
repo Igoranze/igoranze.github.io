@@ -1,54 +1,61 @@
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<link rel="stylesheet" type="text/css" href="style.css" />
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<link rel="stylesheet" type="text/css" href="style.css" />
 
-<title>L00LZ H4K3D</title>
-</head>
+		<title>L00LZ H4K3D</title>
+	</head>
 
-<body>
-<div id="page">
-    <div id="header">
-        <h1>Hacked</h1>
-        <h2>But not really!</h2>
-    </div>
-    <div class="contentTitle">
-        <h1>What just happend?</h1></div>
-        <div class="contentText">
-            <p>
-                The link posted on LinkedIn contains a website which uses the <i>target="_blank"</i> vulnerability.
-                <a href="https://github.com/Igoranze/igoranze.github.io/blob/master/index.html"><b>source code</b></a>
-                The link will show you the source code used to redirect you to this website. 
-            </p>
-    	</div>
-    </div>
-    <div class="contentTitle">
-        <h1>How it works!</h1>
-        <div class="contentText">
-            <p>People using <code>target='_blank'</code> links usually have no idea about this curious fact:</p>
-            <p><b style="color:red">The page we're linking to <i>gains partial access to the linking page</i> via the <code>window.opener</code> object.</b></p>
-            <p>The newly opened tab can, say, change the <code>window.opener.location</code> to some phishing page. Users <i>trust</i> the page that is already opened, they won't get suspicious.</p>
-            <p><pre>window.opener.location = 'https://igoranze.github.io/hacked.html';</pre>Posible layout: …redirecting to a page that asks the user to re-enter LinkedIn password.</p>
-        <div class="contentTitle">
-            <h2>How to fix</h2>
-            <p>
-                Add this to your outgoing links.
-                <pre>rel="noopener"</pre>
-                Update: FF does not support "noopener" so add this.
-                <pre>rel="noopener noreferrer"</pre>
-                Remember, that every time you open a new window via <code>window.open();</code> you're also "vulnerable" to this, so always reset the "opener" property
-                <pre>var newWnd = window.open(); newWnd.opener = null;</pre>
-            </p>
-        <p>PS. Interestingly, Google <a href="https://sites.google.com/site/bughunteruniversity/nonvuln/phishing-with-window-opener" rel="nofollow">doesn't seem to care</a>.</p>
-    </div>
-</div>
-<div id="footer">
-    <a href="http://www.bryantsmith.com">web page designer </a> 
-    <a href="http://www.bryantsmith.com">bryant smith</a>
-</div>
-
-</body>
-
+	<body>
+		<div id="page">
+			<div id="header">
+				<h1>Hacked</h1>
+				<h2>But not really!</h2>
+			</div>
+			
+			<div class="contentTitle">
+				<h1>What just happend?</h1>
+			</div>
+			<div class="contentText">
+				<p>
+					The link posted on LinkedIn contains a website which uses the <i>target="_blank"</i> vulnerability.
+					<a href="https://github.com/Igoranze/igoranze.github.io/blob/master/index.html"><b>source code</b></a>
+					The link will show you the source code used to redirect you to this website. 
+				</p>
+			</div>
+			
+			<div class="contentTitle">
+				<h1>How it works!</h1>
+			</div>
+			<div class="contentText">
+				<p>
+					People using <code>target='_blank'</code> links usually have no idea about this curious fact:
+					<b style="color:red">The page we're linking to <i>gains partial access to the linking page</i> via the <code>window.opener</code> object.</b>
+					The newly opened tab can, say, change the <code>window.opener.location</code> to some phishing page. Users <i>trust</i> the page that is already opened, they won't get suspicious.
+					window.opener.location = 'https://igoranze.github.io/hacked.html';Posible layout: …redirecting to a page that asks the user to re-enter LinkedIn password.
+				</p>
+			</div>
+			        
+			<div class="contentTitle">
+				<h2>How to fix</h2>
+			</div>
+			<div class="contentText">
+				<p>
+					Add this to your outgoing links.
+					rel="noopener"
+					Update: FF does not support "noopener" so add this.
+					rel="noopener noreferrer"
+					Remember, that every time you open a new window via <code>window.open();</code> you're also "vulnerable" to this, so always reset the "opener" property
+					var newWnd = window.open(); newWnd.opener = null;
+				</p>
+				<p>PS. Interestingly, Google <a href="https://sites.google.com/site/bughunteruniversity/nonvuln/phishing-with-window-opener" rel="nofollow">doesn't seem to care</a>.</p>
+			</div>
+		</div>
+		<div id="footer">
+			<a href="http://www.bryantsmith.com">web page designer </a> 
+			<a href="http://www.bryantsmith.com">bryant smith</a>
+		</div>
+	</body>
 </html>
