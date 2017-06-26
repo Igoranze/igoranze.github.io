@@ -17,18 +17,30 @@
     <div class="contentTitle">
         <h1>What just happend?</h1></div>
             <div class="contentText">
-                <p>The link posted on LinkedIn contains a website which uses the <i>target="_blank"</i> vulnerbility.</p>
-		    <p><a href="https://github.com/Igoranze/igoranze.github.io/blob/master/index.html">source code</a> This link will show you the source code used to redirect you to this website.
+                <p>
+		The link posted on LinkedIn contains a website which uses the <i>target="_blank"</i> vulnerability.
+		<a href="https://github.com/Igoranze/igoranze.github.io/blob/master/index.html"><b>source code</b></a>
+		The link will show you the source code used to redirect you to this website. 
+		</p>
 			    
             </div>
             <div class="contentTitle">
-                <h1>More on what happend!</h1>
-            </div>
-            <div class="contentText">
-                <p>Info</p>
-	    </div>
+                <h1>How it works!</h1>
+		<p>People using <code>target='_blank'</code> links usually have no idea about this curious fact:</p>
+		<p><b style="color:red">The page we're linking to <i>gains partial access to the linking page</i> via the <code>window.opener</code> object.</b></p>
+		<p>The newly opened tab can, say, change the <code>window.opener.location</code> to some phishing page. Users <i>trust</i> the page that is already opened, they won't get suspicious.</p>
+                <p><pre>window.opener.location = 'https://igoranze.github.io/hacked.html';</pre>Posible layout: …redirecting to a page that asks the user to re-enter LinkedIn password.</p>
         <div class="contentTitle">
-	    <h1>Yet Another?</h1>
+	    <h2>How to fix</h2>
+		<p>Add this to your outgoing links.</p>
+		<pre>rel="noopener"</pre>
+		<p>Update: FF does not support "noopener" so add this.</p>
+		<pre>rel="noopener noreferrer"</pre>
+		<p>Remember, that every time you open a new window via <code>window.open();</code> you're also "vulnerable" to this, so always reset the "opener" property</p>
+		<pre>var newWnd = window.open();
+		newWnd.opener = null;</pre>
+		<p>PS. Interestingly, Google <a href="https://sites.google.com/site/bughunteruniversity/nonvuln/phishing-with-window-opener" rel="nofollow">doesn't seem to care</a>.</p>
+
 	</div>
         <div class="contentText">
 	    Each title is an H1 tag, so choose them carefully :)
