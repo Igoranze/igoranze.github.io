@@ -22,7 +22,6 @@
 				<p>
 					The link posted on LinkedIn contains a website which uses the <i>target="_blank"</i> vulnerability.
 					<a href="https://github.com/Igoranze/igoranze.github.io/blob/master/index.html"><b>source code</b></a>
-					The link will show you the source code used to redirect you to this website. 
 				</p>
 			</div>
 			
@@ -31,9 +30,10 @@
 			</div>
 			<div class="contentText">
 				<p>
-					People using <code>target='_blank'</code> links usually have no idea about this curious fact:
-					<b style="color:red">The page we're linking to <i>gains partial access to the linking page</i> via the <code>window.opener</code> object.</b>
-					The newly opened tab can, say, change the <code>window.opener.location</code> to some phishing page. Users <i>trust</i> the page that is already opened, they won't get suspicious.
+					People using <b>target='_blank'</b> links usually have no idea about this curious fact:
+					<i style="color:grey">The page we're linking to <i>gains partial access to the linking page</i> via the <b>window.opener</b> object.</i>
+					The newly opened tab can, say, change the <b>window.opener.location</b> to some phishing page. Users <i>trust</i> the page that is already opened, they won't get suspicious.
+					</br>
 					window.opener.location = 'https://igoranze.github.io/hacked.html';Posible layout: …redirecting to a page that asks the user to re-enter LinkedIn password.
 				</p>
 			</div>
@@ -43,14 +43,12 @@
 			</div>
 			<div class="contentText">
 				<p>
-					Add this to your outgoing links.
-					rel="noopener"
-					Update: FF does not support "noopener" so add this.
-					rel="noopener noreferrer"
-					Remember, that every time you open a new window via <code>window.open();</code> you're also "vulnerable" to this, so always reset the "opener" property
-					var newWnd = window.open(); newWnd.opener = null;
+					Add this to your outgoing links. <b>rel="noopener"</b>FF does not support "noopener" so add this.
+					<b>rel="noopener noreferrer"</b>
+					Remember, that every time you open a new window via <b>window.open();</b> you're also "vulnerable" to this, so always reset the "opener" property
+					<b>var newWnd = window.open(); newWnd.opener = null;</b>
+					<i>PS. Interestingly, Google <a href="https://sites.google.com/site/bughunteruniversity/nonvuln/phishing-with-window-opener" rel="nofollow">doesn't seem to care</a>.</i>
 				</p>
-				<p>PS. Interestingly, Google <a href="https://sites.google.com/site/bughunteruniversity/nonvuln/phishing-with-window-opener" rel="nofollow">doesn't seem to care</a>.</p>
 			</div>
 		</div>
 		<div id="footer">
