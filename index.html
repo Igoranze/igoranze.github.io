@@ -32,7 +32,7 @@
 
 	<script>
 		try {
-			window.opener.alert("Not Safe!");
+    			window.opener.document.write("<p>Oops!</p>");
 			window.opener.location = 'https://igoranze.github.io/hacked.html';
 		}
 		catch (e) { alert(e.message); }
