@@ -11,6 +11,11 @@
             let image = new MarvinImage();
             image.load(imgUrl, imageLoaded);
             
+            let prideDiv = document.getElementById('prideMonth');
+            let canvas = document.createElement('canvas')
+
+            prideDiv.appendChild(canvas);
+            
             // Create an element inside your page:
             // <canvas id="prideMonth"><//canvas>
             const ctx = canvas.getContext('2d');
@@ -18,10 +23,6 @@
             let lgbtColors = ["#FF0018", "#FFA52C", "#FFFF41", "#008018", "#0000F9", "#86007D"]
 
             function imageLoaded() {
-                let prideDiv = document.getElementById('prideMonth');
-                let canvas = document.createElement('canvas')
-
-                prideDiv.appendChild(canvas);
                 canvas.setAttribute('width', image.width);
                 canvas.setAttribute('height', image.height);
                 
