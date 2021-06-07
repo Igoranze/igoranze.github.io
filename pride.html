@@ -7,13 +7,21 @@
             // Load this script tag for this library to work:
             // <script src="https://www.marvinj.org/releases/marvinj-0.7.js"><//script>
 
+            let canvas = document.createElement('canvas')
+
+            let prideDiv = document.getElementById('prideMonth');
+
+            prideDiv.appendChild(canvas);
+            
             let imgUrl = document.getElementById("imgUrl").value;
             let image = new MarvinImage();
             image.load(imgUrl, imageLoaded);
 
+            canvas.setAttribute('width', image.width);
+            canvas.setAttribute('height', image.height);
+            
             // Create an element inside your page:
             // <canvas id="prideMonth"><//canvas>
-            const canvas = document.getElementById('prideMonth');
             const ctx = canvas.getContext('2d');
 
             let lgbtColors = ["#FF0018", "#FFA52C", "#FFFF41", "#008018", "#0000F9", "#86007D"]
@@ -44,10 +52,10 @@
 <body>
 <h2>Convert the PNG to pride month</h2>
 
-<canvas id="prideMonth"></canvas>
 
 <input type="text" id="imgUrl"></input>
 <button onclick="createImage()">Click me</button>
 
+    <div id="prideMonth"></div>
 </body>
 </html>
