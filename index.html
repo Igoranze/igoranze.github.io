@@ -244,7 +244,7 @@
         }
         
         a {
-            color: #0f0
+            color: yellow
         }
     </style>
 </head>
@@ -256,7 +256,7 @@
             <div id="static"></div>
             <div id="crt-content"></div>
             <div id="crt-input-container">
-                <div id="crt-input-prompt">$</div>
+                <div id="crt-input-prompt">>$</div>
                 <input type="text" id="crt-input" autofocus>
                 <span id="crt-cursor"> /</span>
             </div>
@@ -276,7 +276,8 @@
                     'user': {
                         'documents': {
                             'contact.txt': 'You can reach me at <a href="mailto:igor@spengenit.nl">igor@spengenit.nl</a>\nor call me at <a href="tel:0031641077617">+31 6 410 77 617</a>\nKVK: 93820542',
-                            'whoami.txt': 'CTO/Lead Software Engineer with more than 10 years of experience in Software Engineering and over 4 years of experience in leading teams. I have a strong focus on security, scalability, and sustainability and have developed multiple business products from start to finish.'
+                            'whoami.txt': 'CTO/Lead Software Engineer with more than 10 years of experience in Software Engineering and over 4 years of experience in leading teams. I have a strong focus on security, scalability, and sustainability and have developed multiple business products from start to finish.',
+                            'SpengenIT-CV.txt': "Oops, to download this file use the following command: wget https://spengenit.nl/SpengenIT-CV.pdf"
                         }
                     }
                 }
@@ -315,16 +316,48 @@
                         } else {
                             return 'cat: missing file operand';
                         }
+                    case 'wget':
+                        if (args.length > 1) {
+                            return downloadFile(args[1]);
+                        } else {
+                            return 'cat: missing file operand';
+                        }
                     default:
                         return `${cmd}: command not found`;
                 }
             }
+            
+            function downloadFile(url) {
+               if (url !== 'https://spengenit.nl/SpengenIT-CV.pdf') {
+                   return 'permission denied';
+               }
+               
+              // Replace the URL with the direct link to your Google Drive PDF
+              const fileUrl = 'https://raw.githubusercontent.com/Igoranze/igoranze.github.io/master/SpengenIT-CV.pdf';
+
+              // Create a temporary anchor element
+              const anchorElement = document.createElement('a');
+              anchorElement.href = fileUrl;
+
+              // Set the download attribute to force download
+              anchorElement.setAttribute('download', 'output.pdf');
+
+              // Append the anchor to the body and trigger a click event
+              document.body.appendChild(anchorElement);
+              anchorElement.click();
+
+              // Clean up
+              document.body.removeChild(anchorElement);
+              
+              return "File has been downloaded to your machine.\n";
+          }
+        
 
             crtInput.addEventListener('keydown', function(event) {
                 if (event.key === 'Enter') {
                     const input = crtInput.value.trim();
                     crtContent.innerHTML += `${input}\n`;
-                    crtContent.innerHTML += `${processCommand(input)}\n$ `;
+                    crtContent.innerHTML += `<p style='color: yellow !important'>${processCommand(input)}</p>\nSpengenIT@client:~$ `;
                     crtInput.value = '';
                     crtContent.scrollTop = crtContent.scrollHeight;
                 }
@@ -333,7 +366,7 @@
             setTimeout(() => {
                 crtScreen.classList.remove('startup');
                 crtScreen.classList.add('running');
-                crtContent.innerHTML = 'Welcome to SpengenIT!\nUse one of the following commands:\nls - list directory contents\ncat - concatenate files and print on the standard output$ ';
+                crtContent.innerHTML = 'Welcome to SpengenIT!\nUse one of the following commands:\nls - list directory contents\ncat - concatenate files and print on the standard output\nSpengenIT@client:~$ ';
             }, 300); // The duration of the startup animation
         });
     </script>
