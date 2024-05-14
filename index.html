@@ -357,7 +357,7 @@
                 if (event.key === 'Enter') {
                     const input = crtInput.value.trim();
                     crtContent.innerHTML += `${input}\n`;
-                    crtContent.innerHTML += `<p style='color: yellow !important'>${processCommand(input)}</p>\nSpengenIT@client:~$ `;
+                    crtContent.innerHTML += `<div style='color: yellow !important'>${processCommand(input)}</div>\nSpengenIT@client:~$ `;
                     crtInput.value = '';
                     crtContent.scrollTop = crtContent.scrollHeight;
                 }
