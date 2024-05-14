@@ -1,44 +1,341 @@
-<html>
-
-<title>Nothing to do here</title>
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive CRT Terminal</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #000;
+            margin: 0;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        #crt-monitor {
+            width: 800px;
+            height: 600px;
+            background-color: #333;
+            border: 10px solid #666;
+            border-radius: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+            position: relative;
+            overflow: hidden;
+        }
+
+        #crt-screen {
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, #222 0%, #000 100%);
+            position: relative;
+            overflow: hidden;
+            transform: perspective(1000px) rotateX(2deg) rotateY(1deg);
+            border-radius: 10px;
+        }
+
+        #crt-content {
+            color: #0f0;
+            font-size: 18px;
+            padding: 20px;
+            white-space: pre-wrap;
+            height: calc(100% - 40px);
+            box-sizing: border-box;
+            overflow-y: scroll;
+        }
+
+        #crt-content::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        #crt-content::-webkit-scrollbar-thumb {
+            background: #0f0;
+            border-radius: 10px;
+        }
+
+        #crt-content::-webkit-scrollbar-track {
+            background: #222;
+        }
+
+        #scanlines {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(0, 0, 0, 0.3) 50%, transparent 50%);
+            background-size: 100% 2px;
+            pointer-events: none;
+        }
+
+        #static {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: url('https://www.publicdomainpictures.net/pictures/320000/nahled/tv-static-noise.jpg');
+            background-size: cover;
+            opacity: 0.2;
+            mix-blend-mode: screen;
+            pointer-events: none;
+            animation: static-flicker 0.2s steps(10) infinite;
+        }
+
+        @keyframes crt-startup {
+            0% {
+                opacity: 0;
+                transform: scale(0.9) rotate(0.5deg);
+            }
+            10% {
+                opacity: 1;
+                transform: scale(1.1) rotate(-0.5deg);
+            }
+            20% {
+                opacity: 0;
+                transform: scale(0.9) rotate(0.5deg);
+            }
+            30% {
+                opacity: 1;
+                transform: scale(1.1) rotate(-0.5deg);
+            }
+            40% {
+                opacity: 0;
+                transform: scale(0.9) rotate(0.5deg);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.05) rotate(-0.2deg);
+            }
+            60% {
+                opacity: 0;
+                transform: scale(1) rotate(0.1deg);
+            }
+            70% {
+                opacity: 1;
+                transform: scale(1.05) rotate(-0.2deg);
+            }
+            80% {
+                opacity: 0;
+                transform: scale(1) rotate(0.1deg);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) rotate(0);
+            }
+        }
+
+        @keyframes crt-flicker {
+            0% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.8;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes screen-shake {
+            0% {
+                transform: translate(1px, 1px) rotate(0deg);
+            }
+            10% {
+                transform: translate(-1px, -2px) rotate(-1deg);
+            }
+            20% {
+                transform: translate(-3px, 0px) rotate(1deg);
+            }
+            30% {
+                transform: translate(3px, 2px) rotate(0deg);
+            }
+            40% {
+                transform: translate(1px, -1px) rotate(1deg);
+            }
+            50% {
+                transform: translate(-1px, 2px) rotate(-1deg);
+            }
+            60% {
+                transform: translate(-3px, 1px) rotate(0deg);
+            }
+            70% {
+                transform: translate(3px, 1px) rotate(-1deg);
+            }
+            80% {
+                transform: translate(-1px, -1px) rotate(1deg);
+            }
+            90% {
+                transform: translate(1px, 2px) rotate(0deg);
+            }
+            100% {
+                transform: translate(1px, -2px) rotate(-1deg);
+            }
+        }
+
+        @keyframes static-flicker {
+            0% {
+                opacity: 0.2;
+            }
+            50% {
+                opacity: 0.3;
+            }
+            100% {
+                opacity: 0.2;
+            }
+        }
+
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        #crt-screen.startup #crt-content {
+            animation: crt-startup 3s steps(50) 1, crt-flicker 0.05s infinite;
+        }
+
+        #crt-screen.startup {
+            animation: screen-shake 0.3s steps(50) 2;
+        }
+
+        #crt-screen.running #crt-content {
+            animation: crt-flicker 0.1s infinite;
+        }
+
+        #crt-input-container {
+            display: flex;
+            align-items: center;
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            width: calc(100% - 40px);
+        }
+
+        #crt-input-prompt {
+            color: #0f0;
+            font-size: 18px;
+        }
+
+        #crt-input {
+            width: 100%;
+            border: none;
+            background: none;
+            color: #0f0;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 18px;
+            caret-color: #0f0;
+            outline: none;
+        }
+
+        #crt-cursor {
+            display: inline;
+            animation: blink 1s step-start infinite;
+        }
+
+        .glass-effect {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.2);
+            pointer-events: none;
+        }
+        
+        a {
+            color: #0f0
+        }
+    </style>
 </head>
-
 <body>
+    <div id="crt-monitor">
+        <div id="crt-screen" class="startup">
+            <div class="glass-effect"></div>
+            <div id="scanlines"></div>
+            <div id="static"></div>
+            <div id="crt-content"></div>
+            <div id="crt-input-container">
+                <div id="crt-input-prompt">$</div>
+                <input type="text" id="crt-input" autofocus>
+                <span id="crt-cursor"> /</span>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const crtScreen = document.getElementById('crt-screen');
+            const crtContent = document.getElementById('crt-content');
+            const crtInputContainer = document.getElementById('crt-input-container');
+            const crtInput = document.getElementById('crt-input');
+            const crtCursor = document.getElementById('crt-cursor');
 
-	<style type="text/css"> 
-		#image {
-			position:absolute;
-			top: 50%;
-			left: 40%;
-			width:60em;
-			height:30em;
-			margin-top: -12.5em; /*set to a negative number 1/2 of your height*/
-			margin-left: -20em; /*set to a negative number 1/2 of your width*/
-			border: 1px solid #ccc;
-			background-color: #E0F2F1;
-		}
+            // Filesystem simulation
+            const filesystem = {
+                'home': {
+                    'user': {
+                        'documents': {
+                            'contact.txt': 'You can reach me at <a href="mailto:igor@spengenit.nl">igor@spengenit.nl</a>\nor call me at <a href="tel:0031641077617">+31 6 410 77 617</a>\nKVK: 93820542',
+                            'whoami.txt': 'CTO/Lead Software Engineer with more than 10 years of experience in Software Engineering and over 4 years of experience in leading teams. I have a strong focus on security, scalability, and sustainability and have developed multiple business products from start to finish.'
+                        }
+                    }
+                }
+            };
 
-		.center {
-			top: 50%;
-			left: 50%;
-		}
 
-		body {
-			background-color: #D3D3D3;
-		}
-	</style>
 
-	<script>
-		try 
-		{
-		    window.opener.location = 'https://igoranze.github.io/hacked.html';
-		}
-		catch (e) { }
-	</script>
+            // Current directory pointer
+            let currentDir = filesystem['home']['user']['documents'];
 
-	<img src="/ntdh.jpg" id="image" /> 
+            function ls() {
+                let output = '';
+                for (const item in currentDir) {
+                    output += `${item}\n`;
+                }
+                return output;
+            }
 
-	</body>
+            function cat(filename) {
+                if (currentDir[filename]) {
+                    return currentDir[filename];
+                } else {
+                    return `cat: ${filename}: No such file or directory`;
+                }
+            }
+
+            function processCommand(command) {
+                const args = command.split(' ');
+                const cmd = args[0];
+                switch (cmd) {
+                    case 'ls':
+                        return ls();
+                    case 'cat':
+                        if (args.length > 1) {
+                            return cat(args[1]);
+                        } else {
+                            return 'cat: missing file operand';
+                        }
+                    default:
+                        return `${cmd}: command not found`;
+                }
+            }
+
+            crtInput.addEventListener('keydown', function(event) {
+                if (event.key === 'Enter') {
+                    const input = crtInput.value.trim();
+                    crtContent.innerHTML += `${input}\n`;
+                    crtContent.innerHTML += `${processCommand(input)}\n$ `;
+                    crtInput.value = '';
+                    crtContent.scrollTop = crtContent.scrollHeight;
+                }
+            });
+
+            setTimeout(() => {
+                crtScreen.classList.remove('startup');
+                crtScreen.classList.add('running');
+                crtContent.innerHTML = 'Welcome to SpengenIT!\nUse one of the following commands:\nls - list directory contents\ncat - concatenate files and print on the standard output$ ';
+            }, 300); // The duration of the startup animation
+        });
+    </script>
+</body>
 </html>
