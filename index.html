@@ -572,8 +572,34 @@
     /*  }*/
     /*}*/
 
+/* only show on mobile */
+    @media only screen and (min-device-width: 768px) {
+      #input_mobile {
+        display: none;
+      }
+    }
+
+    @media only screen and (max-device-width: 768px) {
 
 
+      #input_mobile {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 50px;
+        background: #FFF;
+        color: #000;
+        font-size: 20px;
+        text-align: center;
+        border: none;
+        outline: none;
+        padding: 10px;
+        box-sizing: border-box;
+        font-family: 'Courier New', Courier, monospace;
+        display: flex;
+      }
+    }
   </style>
 
 
@@ -594,16 +620,21 @@
         <span></span>
         <span id="text-input">
         </span>
-      <input autofocus hidden="hidden">
+
       </div>
+
     </div>
+
   </div>
+
 </main>
 
+<input id="input_mobile" autofocus style="z-index: 100">
 
 <script>
   const log = document.getElementById("text-input");
   const body = document.querySelector("body");
+  const input = document.getElementById("input_mobile");
 
   body.addEventListener("keypress", handleKeyPress);
   let terminalInput = "";
@@ -639,8 +670,6 @@
   }
 
   function doTerminalStuff() {
-    console.log(terminalInput);
-
     let result = processCommand(terminalInput);
 
     if (result === "" || result === undefined) {
@@ -650,6 +679,7 @@
     }
 
     log.scrollTo(0, log.scrollHeight);
+    input.value = "";
 
     // split on space
     terminalInput = "";
