@@ -693,7 +693,7 @@
           'documents': {
             'contact.txt': 'You can reach me at <a href="mailto:igor@spengenit.nl">igor@spengenit.nl</a>\nor call me at <a href="tel:0031641077617">+31 6 410 77 617</a>\nKVK: 93820542',
             'whoami.txt': 'CTO/Lead Software Engineer with more than 10 years of experience in Software Engineering and over 4 years of experience in leading teams. I have a strong focus on security, scalability, and sustainability and have developed multiple business products from start to finish.',
-            'SpengenIT-CV.txt': "The file has been downloaded to your machine."
+            'SpengenIT-CV.pdf': "The file has been downloaded to your machine."
           }
         }
       }
@@ -714,7 +714,7 @@
 
     function cat(filename) {
       if (currentDir[filename]) {
-        if (filename === 'SpengenIT-CV.txt') {
+        if (filename === 'SpengenIT-CV.pdf') {
           downloadFile('https://spengenit.nl/SpengenIT-CV.pdf');
         }
         return currentDir[filename];
