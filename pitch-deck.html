@@ -1,0 +1,1432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Weight Coach - Pitch Deck</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #0a0a1a;
+      color: #fff;
+      overflow: hidden;
+    }
+
+    /* Slide container */
+    .deck-container {
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+    }
+
+    .slide {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: none;
+      padding: 60px 80px;
+      background: linear-gradient(135deg, #0a0a1a 0%, #1a1a3a 50%, #0f0f23 100%);
+      overflow: hidden;
+    }
+
+    .slide.active {
+      display: flex;
+      flex-direction: column;
+      animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Animated background elements */
+    .bg-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+      animation: float 8s ease-in-out infinite;
+    }
+
+    .bg-orb.cyan {
+      background: radial-gradient(circle, rgba(0, 217, 255, 0.3) 0%, transparent 70%);
+    }
+
+    .bg-orb.green {
+      background: radial-gradient(circle, rgba(0, 255, 148, 0.2) 0%, transparent 70%);
+    }
+
+    .bg-orb.orange {
+      background: radial-gradient(circle, rgba(255, 184, 0, 0.15) 0%, transparent 70%);
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(30px, -30px); }
+    }
+
+    /* Typography */
+    .slide-number {
+      position: absolute;
+      top: 30px;
+      right: 40px;
+      color: rgba(255,255,255,0.3);
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    h1 {
+      font-size: 64px;
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 24px;
+      background: linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.8) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    h1.gradient {
+      background: linear-gradient(135deg, #00D9FF 0%, #00FF94 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    h2 {
+      font-size: 48px;
+      font-weight: 700;
+      margin-bottom: 32px;
+    }
+
+    h3 {
+      font-size: 28px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: #00D9FF;
+    }
+
+    p {
+      font-size: 20px;
+      line-height: 1.6;
+      color: rgba(255,255,255,0.7);
+    }
+
+    .subtitle {
+      font-size: 24px;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 48px;
+    }
+
+    /* Layout helpers */
+    .flex {
+      display: flex;
+    }
+
+    .flex-1 {
+      flex: 1;
+    }
+
+    .gap-40 {
+      gap: 40px;
+    }
+
+    .gap-24 {
+      gap: 24px;
+    }
+
+    .items-center {
+      align-items: center;
+    }
+
+    .justify-center {
+      justify-content: center;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    /* Glass card */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 32px;
+    }
+
+    .glass-card.highlight {
+      background: linear-gradient(135deg, rgba(0, 217, 255, 0.1) 0%, rgba(0, 255, 148, 0.1) 100%);
+      border: 1px solid rgba(0, 217, 255, 0.3);
+    }
+
+    /* Feature list */
+    .feature-list {
+      list-style: none;
+    }
+
+    .feature-list li {
+      font-size: 20px;
+      padding: 16px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .feature-list li:last-child {
+      border-bottom: none;
+    }
+
+    .feature-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(0, 217, 255, 0.2) 0%, rgba(0, 255, 148, 0.2) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
+
+    /* Stats grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .stat-card {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 20px;
+      padding: 32px;
+      text-align: center;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .stat-value {
+      font-size: 56px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #00D9FF 0%, #00FF94 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+
+    .stat-label {
+      font-size: 16px;
+      color: rgba(255,255,255,0.5);
+    }
+
+    /* Timeline */
+    .timeline {
+      display: flex;
+      gap: 0;
+      position: relative;
+    }
+
+    .timeline-item {
+      flex: 1;
+      padding: 24px;
+      position: relative;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #00D9FF, #00FF94);
+      border-radius: 2px;
+    }
+
+    .timeline-month {
+      font-size: 14px;
+      color: #00D9FF;
+      font-weight: 600;
+      margin-bottom: 12px;
+      margin-top: 16px;
+    }
+
+    .timeline-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .timeline-desc {
+      font-size: 14px;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.5;
+    }
+
+    /* Pricing cards */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 32px;
+      max-width: 900px;
+    }
+
+    .pricing-card {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 24px;
+      padding: 40px;
+      border: 1px solid rgba(255,255,255,0.1);
+      position: relative;
+    }
+
+    .pricing-card.featured {
+      background: linear-gradient(135deg, rgba(0, 217, 255, 0.1) 0%, rgba(0, 255, 148, 0.1) 100%);
+      border: 2px solid rgba(0, 217, 255, 0.5);
+    }
+
+    .pricing-badge {
+      position: absolute;
+      top: -12px;
+      right: 24px;
+      background: linear-gradient(135deg, #00D9FF 0%, #00FF94 100%);
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #0a0a1a;
+    }
+
+    .pricing-name {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .pricing-price {
+      font-size: 48px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #00D9FF 0%, #00FF94 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 24px;
+    }
+
+    .pricing-price span {
+      font-size: 18px;
+      font-weight: 400;
+      -webkit-text-fill-color: rgba(255,255,255,0.5);
+    }
+
+    .pricing-features {
+      list-style: none;
+    }
+
+    .pricing-features li {
+      padding: 12px 0;
+      font-size: 16px;
+      color: rgba(255,255,255,0.7);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .pricing-features li::before {
+      content: '✓';
+      color: #00FF94;
+      font-weight: 700;
+    }
+
+    /* Phone mockup in slides */
+    .phone-mockup {
+      width: 280px;
+      height: 580px;
+      background: linear-gradient(180deg, #1a1a2e 0%, #0f0f1a 100%);
+      border-radius: 40px;
+      padding: 10px;
+      box-shadow: 0 50px 100px rgba(0, 0, 0, 0.5), inset 0 0 0 2px rgba(255,255,255,0.1);
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .phone-notch {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 28px;
+      background: #000;
+      border-radius: 16px;
+      z-index: 10;
+    }
+
+    .phone-screen {
+      width: 100%;
+      height: 100%;
+      border-radius: 32px;
+      overflow: hidden;
+      background: linear-gradient(180deg, #0a0a1a 0%, #1a1a3a 100%);
+    }
+
+    /* Demo phone with animation */
+    .demo-screen {
+      padding: 50px 16px 24px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .demo-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .demo-logo {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, #00D9FF 0%, #00FF94 100%);
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      margin: 0 auto 12px;
+      box-shadow: 0 10px 30px rgba(0, 217, 255, 0.3);
+    }
+
+    .demo-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .demo-subtitle {
+      font-size: 12px;
+      color: rgba(255,255,255,0.5);
+    }
+
+    .demo-card {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 12px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .demo-progress {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .demo-ring {
+      width: 60px;
+      height: 60px;
+      border-radius: 30px;
+      border: 4px solid rgba(255,255,255,0.1);
+      border-top-color: #00D9FF;
+      border-right-color: #00FF94;
+      animation: spin 3s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .demo-stats {
+      flex: 1;
+    }
+
+    .demo-stat-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      margin-bottom: 6px;
+    }
+
+    .demo-stat-label {
+      color: rgba(255,255,255,0.5);
+    }
+
+    .demo-stat-value {
+      color: #00D9FF;
+      font-weight: 600;
+    }
+
+    .demo-button {
+      background: linear-gradient(135deg, #00D9FF 0%, #00FF94 100%);
+      border: none;
+      border-radius: 12px;
+      padding: 14px;
+      width: 100%;
+      color: #0a0a1a;
+      font-size: 14px;
+      font-weight: 600;
+      margin-top: auto;
+    }
+
+    /* Navigation */
+    .nav-bar {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(20px);
+      border-radius: 30px;
+      padding: 12px 24px;
+      display: flex;
+      gap: 16px;
+      z-index: 1000;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .nav-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.3);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .nav-dot.active {
+      background: linear-gradient(135deg, #00D9FF 0%, #00FF94 100%);
+      width: 32px;
+    }
+
+    .nav-arrows {
+      position: fixed;
+      bottom: 30px;
+      right: 40px;
+      display: flex;
+      gap: 12px;
+      z-index: 1000;
+    }
+
+    .nav-arrow {
+      width: 50px;
+      height: 50px;
+      border-radius: 25px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #fff;
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+
+    .nav-arrow:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Principles grid */
+    .principles-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+
+    .principle-card {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 20px;
+      padding: 28px;
+      border: 1px solid rgba(255,255,255,0.1);
+      transition: all 0.3s ease;
+    }
+
+    .principle-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(0, 217, 255, 0.3);
+    }
+
+    .principle-icon {
+      font-size: 36px;
+      margin-bottom: 16px;
+    }
+
+    .principle-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .principle-desc {
+      font-size: 14px;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.5;
+    }
+
+    /* Comparison table */
+    .comparison-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+
+    .comparison-table th {
+      text-align: left;
+      padding: 16px 24px;
+      font-weight: 600;
+      font-size: 14px;
+      color: rgba(255,255,255,0.5);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .comparison-table th:first-child {
+      border-radius: 16px 0 0 0;
+    }
+
+    .comparison-table th:last-child {
+      border-radius: 0 16px 0 0;
+      text-align: center;
+      background: linear-gradient(135deg, rgba(0, 217, 255, 0.1) 0%, rgba(0, 255, 148, 0.1) 100%);
+      color: #00D9FF;
+    }
+
+    .comparison-table td {
+      padding: 16px 24px;
+      font-size: 15px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .comparison-table td:last-child {
+      text-align: center;
+      background: rgba(0, 217, 255, 0.05);
+    }
+
+    .comparison-table tr:last-child td:first-child {
+      border-radius: 0 0 0 16px;
+    }
+
+    .comparison-table tr:last-child td:last-child {
+      border-radius: 0 0 16px 0;
+    }
+
+    .check {
+      color: #00FF94;
+      font-weight: 700;
+    }
+
+    .x {
+      color: rgba(255,255,255,0.3);
+    }
+
+    /* Logo */
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .logo-icon {
+      width: 64px;
+      height: 64px;
+      background: linear-gradient(135deg, #00D9FF 0%, #00FF94 100%);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      box-shadow: 0 10px 40px rgba(0, 217, 255, 0.3);
+    }
+
+    .logo-text {
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    /* Interactive demo embed */
+    .demo-embed {
+      width: 100%;
+      max-width: 400px;
+      border-radius: 50px;
+      overflow: hidden;
+      box-shadow: 0 50px 100px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Flow diagram */
+    .flow-container {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .flow-step {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 20px;
+      padding: 24px;
+      text-align: center;
+      width: 160px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .flow-step-icon {
+      font-size: 40px;
+      margin-bottom: 12px;
+    }
+
+    .flow-step-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .flow-step-desc {
+      font-size: 11px;
+      color: rgba(255,255,255,0.5);
+    }
+
+    .flow-arrow {
+      color: #00D9FF;
+      font-size: 24px;
+    }
+
+    /* Full width content */
+    .content-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      z-index: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="deck-container">
+
+    <!-- Slide 1: Title -->
+    <div class="slide active" id="slide-1">
+      <div class="bg-orb cyan" style="width: 500px; height: 500px; top: -200px; right: -100px;"></div>
+      <div class="bg-orb green" style="width: 400px; height: 400px; bottom: -100px; left: -100px;"></div>
+      <span class="slide-number">01</span>
+
+      <div class="content-wrapper">
+        <div class="flex items-center gap-40">
+          <div class="flex-1">
+            <div class="logo">
+              <div class="logo-icon">⚡</div>
+              <span class="logo-text">AI Weight Coach</span>
+            </div>
+            <h1>The Future of<br><span class="gradient">Weight Loss</span></h1>
+            <p class="subtitle">A proactive, vision-first AI coach that helps users lose weight realistically, sustainably, and with minimal manual effort.</p>
+            <p style="color: rgba(255,255,255,0.4); font-size: 16px;">Press → to navigate</p>
+          </div>
+
+          <div class="phone-mockup">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <div class="demo-screen">
+                <div class="demo-header">
+                  <div class="demo-logo">⚡</div>
+                  <div class="demo-title">AI Weight Coach</div>
+                  <div class="demo-subtitle">Your pocket fitness expert</div>
+                </div>
+                <div class="demo-card">
+                  <div class="demo-progress">
+                    <div class="demo-ring"></div>
+                    <div class="demo-stats">
+                      <div class="demo-stat-row">
+                        <span class="demo-stat-label">Calories</span>
+                        <span class="demo-stat-value">820 / 1,680</span>
+                      </div>
+                      <div class="demo-stat-row">
+                        <span class="demo-stat-label">Protein</span>
+                        <span class="demo-stat-value">45g / 120g</span>
+                      </div>
+                      <div class="demo-stat-row">
+                        <span class="demo-stat-label">Steps</span>
+                        <span class="demo-stat-value">6,240</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="demo-card" style="background: linear-gradient(135deg, rgba(0, 217, 255, 0.15) 0%, rgba(0, 255, 148, 0.15) 100%); border-color: rgba(0, 217, 255, 0.3);">
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 20px;">💡</span>
+                    <div>
+                      <div style="font-size: 11px; color: #00D9FF; font-weight: 600;">AI Coach Tip</div>
+                      <div style="font-size: 12px; color: rgba(255,255,255,0.8);">Add protein before dinner!</div>
+                    </div>
+                  </div>
+                </div>
+                <button class="demo-button">📷 Log Food</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 2: Problem -->
+    <div class="slide" id="slide-2">
+      <div class="bg-orb orange" style="width: 400px; height: 400px; top: 50%; right: -100px; transform: translateY(-50%);"></div>
+      <span class="slide-number">02</span>
+
+      <div class="content-wrapper">
+        <h2>The Problem</h2>
+        <p class="subtitle">Why traditional weight loss apps fail</p>
+
+        <div class="stats-grid" style="margin-bottom: 48px;">
+          <div class="stat-card">
+            <div class="stat-value">95%</div>
+            <div class="stat-label">of diets fail within 5 years</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">73%</div>
+            <div class="stat-label">quit tracking within 2 weeks</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">80%</div>
+            <div class="stat-label">want a coach, can't afford one</div>
+          </div>
+        </div>
+
+        <div class="glass-card">
+          <h3 style="margin-bottom: 20px;">Current Solutions Fall Short</h3>
+          <div class="flex gap-40">
+            <div class="flex-1">
+              <p style="font-size: 16px; margin-bottom: 12px;">❌ Manual calorie logging is tedious</p>
+              <p style="font-size: 16px; margin-bottom: 12px;">❌ Generic advice doesn't adapt to behavior</p>
+              <p style="font-size: 16px;">❌ Motivation disappears after initial excitement</p>
+            </div>
+            <div class="flex-1">
+              <p style="font-size: 16px; margin-bottom: 12px;">❌ No intervention before failure happens</p>
+              <p style="font-size: 16px; margin-bottom: 12px;">❌ Unrealistic goal setting leads to burnout</p>
+              <p style="font-size: 16px;">❌ Human coaches cost $200-500/month</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 3: Solution -->
+    <div class="slide" id="slide-3">
+      <div class="bg-orb cyan" style="width: 600px; height: 600px; top: -200px; left: -200px;"></div>
+      <div class="bg-orb green" style="width: 300px; height: 300px; bottom: -50px; right: 100px;"></div>
+      <span class="slide-number">03</span>
+
+      <div class="content-wrapper">
+        <h2>Our Solution</h2>
+        <p class="subtitle">AI coaching that actually works</p>
+
+        <div class="principles-grid">
+          <div class="principle-card">
+            <div class="principle-icon">📸</div>
+            <div class="principle-title">Vision-First</div>
+            <div class="principle-desc">Snap a photo of your meal. AI estimates calories, portions, and macros instantly. No manual input needed.</div>
+          </div>
+          <div class="principle-card">
+            <div class="principle-icon">🎯</div>
+            <div class="principle-title">Honest Goals</div>
+            <div class="principle-desc">AI reality-checks your goals with achievable timelines. No false promises, just sustainable results.</div>
+          </div>
+          <div class="principle-card">
+            <div class="principle-icon">🤖</div>
+            <div class="principle-title">Proactive Coaching</div>
+            <div class="principle-desc">Detects patterns and intervenes before bad habits form. Weekend overeating? We'll warn you Friday.</div>
+          </div>
+          <div class="principle-card">
+            <div class="principle-icon">✨</div>
+            <div class="principle-title">Low Friction</div>
+            <div class="principle-desc">Minimal manual input. Just snap photos and live your life. The AI handles the rest.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 4: How It Works - Onboarding -->
+    <div class="slide" id="slide-4">
+      <div class="bg-orb green" style="width: 400px; height: 400px; top: -100px; right: 200px;"></div>
+      <span class="slide-number">04</span>
+
+      <div class="content-wrapper">
+        <h2>Smart Onboarding</h2>
+        <p class="subtitle">Establish trust and set realistic expectations</p>
+
+        <div class="flex items-center gap-40">
+          <div class="flex-1">
+            <div class="flow-container">
+              <div class="flow-step">
+                <div class="flow-step-icon">📋</div>
+                <div class="flow-step-title">User Basics</div>
+                <div class="flow-step-desc">Age, sex, height, weight, activity</div>
+              </div>
+              <span class="flow-arrow">→</span>
+              <div class="flow-step">
+                <div class="flow-step-icon">📸</div>
+                <div class="flow-step-title">Body Photo</div>
+                <div class="flow-step-desc">Front & side analysis</div>
+              </div>
+              <span class="flow-arrow">→</span>
+              <div class="flow-step">
+                <div class="flow-step-icon">🎯</div>
+                <div class="flow-step-title">Set Goals</div>
+                <div class="flow-step-desc">Target weight or visual</div>
+              </div>
+              <span class="flow-arrow">→</span>
+              <div class="flow-step">
+                <div class="flow-step-icon">🤖</div>
+                <div class="flow-step-title">AI Check</div>
+                <div class="flow-step-desc">Reality, risks, timeline</div>
+              </div>
+            </div>
+
+            <div class="glass-card highlight" style="margin-top: 40px;">
+              <h3 style="font-size: 18px; margin-bottom: 12px;">AI Reality Check Example</h3>
+              <p style="font-size: 15px; color: #fff; line-height: 1.6;">
+                "Losing 7kg is achievable in <strong style="color: #00D9FF;">3-4 months</strong> with consistent effort. This means a ~500 calorie daily deficit, 0.5-0.75 kg loss per week. Sustainable, no crash dieting required."
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 5: Food Photo AI -->
+    <div class="slide" id="slide-5">
+      <div class="bg-orb cyan" style="width: 500px; height: 500px; bottom: -200px; left: -100px;"></div>
+      <span class="slide-number">05</span>
+
+      <div class="content-wrapper">
+        <div class="flex items-center gap-40">
+          <div class="flex-1">
+            <h2>Food Tracking<br>Made Effortless</h2>
+            <p class="subtitle">Just snap a photo. AI does the rest.</p>
+
+            <ul class="feature-list">
+              <li>
+                <div class="feature-icon">📸</div>
+                <div>
+                  <strong style="color: #fff;">Instant Recognition</strong>
+                  <p style="font-size: 14px; margin-top: 4px;">AI identifies food type, portion size, and individual ingredients</p>
+                </div>
+              </li>
+              <li>
+                <div class="feature-icon">📊</div>
+                <div>
+                  <strong style="color: #fff;">Accurate Estimation</strong>
+                  <p style="font-size: 14px; margin-top: 4px;">Calories and macros with confidence ranges (e.g., 450-520 cal)</p>
+                </div>
+              </li>
+              <li>
+                <div class="feature-icon">🍺</div>
+                <div>
+                  <strong style="color: #fff;">Full Coverage</strong>
+                  <p style="font-size: 14px; margin-top: 4px;">Meals, snacks, drinks, and alcohol automatically detected</p>
+                </div>
+              </li>
+              <li>
+                <div class="feature-icon">✏️</div>
+                <div>
+                  <strong style="color: #fff;">Optional Correction</strong>
+                  <p style="font-size: 14px; margin-top: 4px;">Fine-tune if needed, but most users never do</p>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <div class="phone-mockup">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <div class="demo-screen" style="padding-top: 60px;">
+                <div style="text-align: center; margin-bottom: 16px;">
+                  <span style="font-size: 14px; color: #00D9FF;">← Back</span>
+                </div>
+                <div style="height: 140px; background: linear-gradient(135deg, #2a2a2a, #1a1a1a); border-radius: 20px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; position: relative;">
+                  <span style="font-size: 50px;">🥗</span>
+                  <div style="position: absolute; bottom: 10px; right: 10px; background: rgba(0, 217, 255, 0.9); padding: 4px 10px; border-radius: 6px;">
+                    <span style="color: #000; font-size: 10px; font-weight: 600;">✓ Analyzed</span>
+                  </div>
+                </div>
+                <div class="demo-card">
+                  <div style="font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 6px;">Grilled Chicken Salad</div>
+                  <div style="font-size: 11px; color: rgba(255,255,255,0.5); margin-bottom: 12px;">chicken, greens, tomatoes, cucumber, dressing</div>
+                  <div style="display: flex; justify-content: space-between; text-align: center;">
+                    <div>
+                      <div style="font-size: 20px; font-weight: 700; background: linear-gradient(135deg, #00D9FF, #00FF94); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">485</div>
+                      <div style="font-size: 9px; color: rgba(255,255,255,0.5);">calories</div>
+                    </div>
+                    <div>
+                      <div style="font-size: 20px; font-weight: 700; color: #00D9FF;">42g</div>
+                      <div style="font-size: 9px; color: rgba(255,255,255,0.5);">protein</div>
+                    </div>
+                    <div>
+                      <div style="font-size: 20px; font-weight: 700; color: #00FF94;">18g</div>
+                      <div style="font-size: 9px; color: rgba(255,255,255,0.5);">carbs</div>
+                    </div>
+                    <div>
+                      <div style="font-size: 20px; font-weight: 700; color: #FFB800;">24g</div>
+                      <div style="font-size: 9px; color: rgba(255,255,255,0.5);">fat</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="demo-card" style="padding: 12px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 11px; color: rgba(255,255,255,0.6);">AI Confidence</span>
+                    <span style="font-size: 11px; color: #00FF94; font-weight: 600;">High (92%)</span>
+                  </div>
+                </div>
+                <button class="demo-button">Log This Meal</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 6: Proactive Coaching -->
+    <div class="slide" id="slide-6">
+      <div class="bg-orb orange" style="width: 450px; height: 450px; top: -100px; left: 50%; transform: translateX(-50%);"></div>
+      <span class="slide-number">06</span>
+
+      <div class="content-wrapper">
+        <h2>Proactive AI Coaching</h2>
+        <p class="subtitle">Intervene before failure, not after</p>
+
+        <div class="flex items-center gap-40">
+          <div class="flex-1">
+            <div class="glass-card" style="margin-bottom: 24px; background: linear-gradient(135deg, rgba(255, 107, 0, 0.1) 0%, rgba(255, 184, 0, 0.1) 100%); border-color: rgba(255, 184, 0, 0.3);">
+              <div style="display: flex; align-items: flex-start; gap: 16px;">
+                <span style="font-size: 32px;">⚠️</span>
+                <div>
+                  <h3 style="color: #FFB800; font-size: 18px; margin-bottom: 8px;">Pattern Detection</h3>
+                  <p style="font-size: 15px; color: #fff;">
+                    "I've noticed you tend to exceed your calorie budget on Saturdays (+400 avg). It's Friday—want me to suggest a strategy for tomorrow?"
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="glass-card" style="margin-bottom: 24px;">
+              <h3 style="font-size: 18px; margin-bottom: 16px;">Behavior Intelligence</h3>
+              <div style="display: flex; flex-direction: column; gap: 12px;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <span style="font-size: 24px;">🌙</span>
+                  <div style="flex: 1;">
+                    <p style="color: #fff; font-size: 14px;">Late Night Eating</p>
+                    <p style="color: rgba(255,255,255,0.5); font-size: 12px;">3 times this week after 9pm</p>
+                  </div>
+                  <span style="background: rgba(255, 107, 0, 0.2); color: #FF6B00; padding: 4px 10px; border-radius: 6px; font-size: 11px;">Watch</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <span style="font-size: 24px;">📅</span>
+                  <div style="flex: 1;">
+                    <p style="color: #fff; font-size: 14px;">Weekend Pattern</p>
+                    <p style="color: rgba(255,255,255,0.5); font-size: 12px;">+35% calories Sat & Sun</p>
+                  </div>
+                  <span style="background: rgba(255, 184, 0, 0.2); color: #FFB800; padding: 4px 10px; border-radius: 6px; font-size: 11px;">Improve</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <span style="font-size: 24px;">🥗</span>
+                  <div style="flex: 1;">
+                    <p style="color: #fff; font-size: 14px;">Vegetable Intake</p>
+                    <p style="color: rgba(255,255,255,0.5); font-size: 12px;">Great variety this week!</p>
+                  </div>
+                  <span style="background: rgba(0, 255, 148, 0.2); color: #00FF94; padding: 4px 10px; border-radius: 6px; font-size: 11px;">Great</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex-1">
+            <div class="glass-card highlight">
+              <h3 style="font-size: 18px; margin-bottom: 16px;">Context-Aware Nudges</h3>
+              <p style="font-size: 14px; color: rgba(255,255,255,0.7); line-height: 1.6; margin-bottom: 16px;">
+                The AI combines multiple signals to deliver the right message at the right time:
+              </p>
+              <ul style="list-style: none;">
+                <li style="display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                  <span style="font-size: 20px;">😴</span>
+                  <span style="font-size: 14px; color: #fff;">Poor sleep → gentler expectations</span>
+                </li>
+                <li style="display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                  <span style="font-size: 20px;">🚶</span>
+                  <span style="font-size: 14px; color: #fff;">Low steps → movement reminder</span>
+                </li>
+                <li style="display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                  <span style="font-size: 20px;">📊</span>
+                  <span style="font-size: 14px; color: #fff;">Consistency drop → motivation boost</span>
+                </li>
+                <li style="display: flex; align-items: center; gap: 12px; padding: 10px 0;">
+                  <span style="font-size: 20px;">🎉</span>
+                  <span style="font-size: 14px; color: #fff;">Milestone reached → celebration</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 7: Smartwatch Integration -->
+    <div class="slide" id="slide-7">
+      <div class="bg-orb cyan" style="width: 400px; height: 400px; bottom: -150px; right: -100px;"></div>
+      <span class="slide-number">07</span>
+
+      <div class="content-wrapper">
+        <h2>Smartwatch Integration</h2>
+        <p class="subtitle">Seamless data from Apple Health & Google Fit</p>
+
+        <div class="flex gap-40">
+          <div class="flex-1">
+            <div class="glass-card" style="margin-bottom: 24px;">
+              <h3 style="font-size: 20px; margin-bottom: 20px;">Phase 1: Core Metrics</h3>
+              <div style="display: flex; gap: 16px;">
+                <div style="flex: 1; text-align: center; padding: 20px; background: rgba(255,255,255,0.05); border-radius: 16px;">
+                  <span style="font-size: 36px;">🚶</span>
+                  <p style="font-size: 14px; color: #fff; margin-top: 8px;">Steps</p>
+                </div>
+                <div style="flex: 1; text-align: center; padding: 20px; background: rgba(255,255,255,0.05); border-radius: 16px;">
+                  <span style="font-size: 36px;">🔥</span>
+                  <p style="font-size: 14px; color: #fff; margin-top: 8px;">Active Calories</p>
+                </div>
+                <div style="flex: 1; text-align: center; padding: 20px; background: rgba(255,255,255,0.05); border-radius: 16px;">
+                  <span style="font-size: 36px;">😴</span>
+                  <p style="font-size: 14px; color: #fff; margin-top: 8px;">Sleep</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="glass-card highlight">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                <span style="font-size: 24px;">⭐</span>
+                <h3 style="font-size: 20px; margin: 0;">Phase 2: Pro Features</h3>
+              </div>
+              <div style="display: flex; gap: 16px;">
+                <div style="flex: 1; text-align: center; padding: 20px; background: rgba(0, 217, 255, 0.1); border-radius: 16px;">
+                  <span style="font-size: 36px;">❤️</span>
+                  <p style="font-size: 14px; color: #fff; margin-top: 8px;">Heart Rate</p>
+                </div>
+                <div style="flex: 1; text-align: center; padding: 20px; background: rgba(0, 217, 255, 0.1); border-radius: 16px;">
+                  <span style="font-size: 36px;">💪</span>
+                  <p style="font-size: 14px; color: #fff; margin-top: 8px;">Workouts</p>
+                </div>
+                <div style="flex: 1; text-align: center; padding: 20px; background: rgba(0, 217, 255, 0.1); border-radius: 16px;">
+                  <span style="font-size: 36px;">🔄</span>
+                  <p style="font-size: 14px; color: #fff; margin-top: 8px;">Recovery</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 24px;">
+            <div style="display: flex; align-items: center; gap: 20px;">
+              <div style="width: 80px; height: 80px; background: #fff; border-radius: 20px; display: flex; align-items: center; justify-content: center;">
+                <span style="font-size: 48px;">🍎</span>
+              </div>
+              <div style="width: 80px; height: 80px; background: #fff; border-radius: 20px; display: flex; align-items: center; justify-content: center;">
+                <span style="font-size: 48px;">🟢</span>
+              </div>
+            </div>
+            <p style="color: rgba(255,255,255,0.5); font-size: 14px;">Apple Health & Google Fit</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 8: Pricing -->
+    <div class="slide" id="slide-8">
+      <div class="bg-orb cyan" style="width: 500px; height: 500px; top: -200px; right: -150px;"></div>
+      <div class="bg-orb green" style="width: 400px; height: 400px; bottom: -100px; left: -100px;"></div>
+      <span class="slide-number">08</span>
+
+      <div class="content-wrapper text-center">
+        <h2>Simple, Transparent Pricing</h2>
+        <p class="subtitle">Start free, upgrade when you're ready</p>
+
+        <div class="pricing-grid" style="margin: 0 auto;">
+          <div class="pricing-card">
+            <div class="pricing-name">Basic</div>
+            <div class="pricing-price">Free</div>
+            <ul class="pricing-features">
+              <li>Food photo → calorie estimation</li>
+              <li>Daily calorie budget</li>
+              <li>Basic progress tracking</li>
+              <li>Manual corrections</li>
+            </ul>
+          </div>
+
+          <div class="pricing-card featured">
+            <div class="pricing-badge">RECOMMENDED</div>
+            <div class="pricing-name">Pro</div>
+            <div class="pricing-price">€12.99<span>/month</span></div>
+            <ul class="pricing-features">
+              <li>Everything in Basic</li>
+              <li>Full body analysis & goal realism</li>
+              <li>Proactive AI coaching & motivation</li>
+              <li>Macro analysis & habit detection</li>
+              <li>Smartwatch integration</li>
+              <li>Weekly AI coach check-ins</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 9: Competitive Advantage -->
+    <div class="slide" id="slide-9">
+      <div class="bg-orb orange" style="width: 350px; height: 350px; top: 100px; right: 100px;"></div>
+      <span class="slide-number">09</span>
+
+      <div class="content-wrapper">
+        <h2>Why We Win</h2>
+        <p class="subtitle">Feature comparison with existing solutions</p>
+
+        <div class="glass-card" style="overflow: hidden; padding: 0;">
+          <table class="comparison-table">
+            <thead>
+              <tr>
+                <th style="width: 40%;">Feature</th>
+                <th style="width: 15%;">MyFitnessPal</th>
+                <th style="width: 15%;">Noom</th>
+                <th style="width: 15%;">Human Coach</th>
+                <th style="width: 15%;">AI Weight Coach</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Photo-based food tracking</td>
+                <td class="x">Limited</td>
+                <td class="x">No</td>
+                <td class="x">Manual</td>
+                <td class="check">✓ Advanced AI</td>
+              </tr>
+              <tr>
+                <td>Proactive behavior intervention</td>
+                <td class="x">No</td>
+                <td class="x">Basic</td>
+                <td class="check">✓</td>
+                <td class="check">✓ Predictive</td>
+              </tr>
+              <tr>
+                <td>Body composition analysis</td>
+                <td class="x">No</td>
+                <td class="x">No</td>
+                <td class="x">Extra cost</td>
+                <td class="check">✓ Included</td>
+              </tr>
+              <tr>
+                <td>Personalized coaching</td>
+                <td class="x">No</td>
+                <td class="x">Generic</td>
+                <td class="check">✓</td>
+                <td class="check">✓ AI-powered</td>
+              </tr>
+              <tr>
+                <td>Realistic goal setting</td>
+                <td class="x">No</td>
+                <td class="x">Limited</td>
+                <td class="check">✓</td>
+                <td class="check">✓ AI reality check</td>
+              </tr>
+              <tr>
+                <td>Price per month</td>
+                <td>$9.99</td>
+                <td>$59+</td>
+                <td>$200-500</td>
+                <td><strong style="color: #00FF94;">€12.99</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 10: Roadmap -->
+    <div class="slide" id="slide-10">
+      <div class="bg-orb green" style="width: 500px; height: 500px; bottom: -200px; left: 50%; transform: translateX(-50%);"></div>
+      <span class="slide-number">10</span>
+
+      <div class="content-wrapper">
+        <h2>MVP Roadmap</h2>
+        <p class="subtitle">90 days to market-ready product</p>
+
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-month">Month 1</div>
+            <div class="timeline-title">Foundation</div>
+            <div class="timeline-desc">
+              • Smart onboarding flow<br>
+              • Calorie calculation logic<br>
+              • Food photo recognition v1<br>
+              • Basic dashboard
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-month">Month 2</div>
+            <div class="timeline-title">Intelligence</div>
+            <div class="timeline-desc">
+              • Proactive coaching engine<br>
+              • Pattern detection<br>
+              • Subscription system<br>
+              • Notification engine
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-month">Month 3</div>
+            <div class="timeline-title">Launch</div>
+            <div class="timeline-desc">
+              • Body analysis v1<br>
+              • Apple Health integration<br>
+              • Google Fit integration<br>
+              • Beta testing & polish
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-card highlight" style="margin-top: 48px;">
+          <div class="flex items-center gap-24">
+            <div class="flex-1">
+              <h3 style="font-size: 18px; margin-bottom: 8px;">Post-Launch Priorities</h3>
+              <p style="font-size: 14px; color: rgba(255,255,255,0.7);">
+                Social features • AI coach personality customization • Meal planning • Restaurant menu scanning • Community challenges
+              </p>
+            </div>
+            <div style="text-align: center;">
+              <div style="font-size: 48px; font-weight: 800; background: linear-gradient(135deg, #00D9FF, #00FF94); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Q2 2026</div>
+              <p style="font-size: 14px; color: rgba(255,255,255,0.5);">Target Launch</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 11: Team/Ask -->
+    <div class="slide" id="slide-11">
+      <div class="bg-orb cyan" style="width: 600px; height: 600px; top: -250px; left: -200px;"></div>
+      <div class="bg-orb green" style="width: 400px; height: 400px; bottom: -150px; right: -100px;"></div>
+      <span class="slide-number">11</span>
+
+      <div class="content-wrapper text-center">
+        <div class="logo" style="justify-content: center; margin-bottom: 48px;">
+          <div class="logo-icon">⚡</div>
+          <span class="logo-text">AI Weight Coach</span>
+        </div>
+
+        <h1>Let's Build the Future<br>of <span class="gradient">Weight Loss</span></h1>
+
+        <p style="font-size: 24px; color: rgba(255,255,255,0.7); max-width: 700px; margin: 32px auto 48px;">
+          Vision-first tracking. Proactive coaching. Realistic results.<br>
+          The AI coach everyone can afford.
+        </p>
+
+        <div class="stats-grid" style="max-width: 900px; margin: 0 auto 48px;">
+          <div class="stat-card">
+            <div class="stat-value">$8B</div>
+            <div class="stat-label">Weight loss app market by 2028</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">500M+</div>
+            <div class="stat-label">People actively trying to lose weight</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">10x</div>
+            <div class="stat-label">Cheaper than human coaching</div>
+          </div>
+        </div>
+
+        <div class="glass-card highlight" style="display: inline-block; padding: 24px 48px;">
+          <p style="font-size: 20px; color: #fff; margin: 0;">
+            <strong>Contact:</strong> igor@spengenit.nl
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Navigation -->
+  <div class="nav-bar">
+    <div class="nav-dot active" onclick="goToSlide(1)"></div>
+    <div class="nav-dot" onclick="goToSlide(2)"></div>
+    <div class="nav-dot" onclick="goToSlide(3)"></div>
+    <div class="nav-dot" onclick="goToSlide(4)"></div>
+    <div class="nav-dot" onclick="goToSlide(5)"></div>
+    <div class="nav-dot" onclick="goToSlide(6)"></div>
+    <div class="nav-dot" onclick="goToSlide(7)"></div>
+    <div class="nav-dot" onclick="goToSlide(8)"></div>
+    <div class="nav-dot" onclick="goToSlide(9)"></div>
+    <div class="nav-dot" onclick="goToSlide(10)"></div>
+    <div class="nav-dot" onclick="goToSlide(11)"></div>
+  </div>
+
+  <div class="nav-arrows">
+    <button class="nav-arrow" onclick="prevSlide()">←</button>
+    <button class="nav-arrow" onclick="nextSlide()">→</button>
+  </div>
+
+  <script>
+    let currentSlide = 1;
+    const totalSlides = 11;
+
+    function goToSlide(n) {
+      document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.nav-dot').forEach(d => d.classList.remove('active'));
+
+      currentSlide = n;
+      document.getElementById(`slide-${n}`).classList.add('active');
+      document.querySelectorAll('.nav-dot')[n - 1].classList.add('active');
+    }
+
+    function nextSlide() {
+      if (currentSlide < totalSlides) {
+        goToSlide(currentSlide + 1);
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlide > 1) {
+        goToSlide(currentSlide - 1);
+      }
+    }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') {
+        e.preventDefault();
+        nextSlide();
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        prevSlide();
+      }
+    });
+
+    // Touch/swipe support
+    let touchStartX = 0;
+    document.addEventListener('touchstart', (e) => {
+      touchStartX = e.touches[0].clientX;
+    });
+
+    document.addEventListener('touchend', (e) => {
+      const touchEndX = e.changedTouches[0].clientX;
+      const diff = touchStartX - touchEndX;
+
+      if (Math.abs(diff) > 50) {
+        if (diff > 0) nextSlide();
+        else prevSlide();
+      }
+    });
+  </script>
+</body>
+</html>

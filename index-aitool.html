@@ -1,0 +1,1568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Weight Coach - Your Personal AI-Powered Weight Loss Coach</title>
+  <meta name="description" content="Lose weight sustainably with AI-powered coaching. Photo-based food tracking, proactive behavior intervention, and personalized guidance at a fraction of the cost of human coaches.">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --cyan: #00D9FF;
+      --green: #00FF94;
+      --orange: #FFB800;
+      --dark: #0a0a1a;
+      --dark-light: #1a1a3a;
+      --gradient: linear-gradient(135deg, #00D9FF 0%, #00FF94 100%);
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--dark);
+      color: #fff;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Utility classes */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .gradient-text {
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .glass {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 24px;
+    }
+
+    /* Animations */
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.5; }
+      50% { transform: scale(1.1); opacity: 0.8; }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .fade-in {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 0.8s ease;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Background orbs */
+    .bg-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .bg-orb.cyan { background: rgba(0, 217, 255, 0.15); }
+    .bg-orb.green { background: rgba(0, 255, 148, 0.1); }
+    .bg-orb.orange { background: rgba(255, 184, 0, 0.1); }
+
+    /* Navigation */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      padding: 20px 0;
+      transition: all 0.3s ease;
+    }
+
+    nav.scrolled {
+      background: rgba(10, 10, 26, 0.9);
+      backdrop-filter: blur(20px);
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    nav .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      width: 44px;
+      height: 44px;
+      background: var(--gradient);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
+
+    .logo-text {
+      font-size: 20px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+    }
+
+    .nav-links a {
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      font-size: 15px;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    .nav-links a:hover {
+      color: #fff;
+    }
+
+    .nav-cta {
+      background: var(--gradient);
+      color: var(--dark);
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 14px;
+      text-decoration: none;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .nav-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(0, 217, 255, 0.3);
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    /* Hero Section */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 120px 0 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero .bg-orb.cyan {
+      width: 600px;
+      height: 600px;
+      top: -200px;
+      right: -100px;
+    }
+
+    .hero .bg-orb.green {
+      width: 500px;
+      height: 500px;
+      bottom: -150px;
+      left: -150px;
+    }
+
+    .hero-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-text h1 {
+      font-size: 64px;
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 24px;
+    }
+
+    .hero-text p {
+      font-size: 20px;
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 32px;
+      max-width: 500px;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: var(--gradient);
+      color: var(--dark);
+      padding: 16px 32px;
+      border-radius: 14px;
+      font-weight: 600;
+      font-size: 16px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 40px rgba(0, 217, 255, 0.4);
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      padding: 16px 32px;
+      border-radius: 14px;
+      font-weight: 600;
+      font-size: 16px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid rgba(255,255,255,0.2);
+      transition: all 0.3s ease;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255,255,255,0.15);
+      border-color: rgba(255,255,255,0.3);
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 40px;
+      margin-top: 48px;
+    }
+
+    .hero-stat {
+      text-align: left;
+    }
+
+    .hero-stat-value {
+      font-size: 32px;
+      font-weight: 800;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-stat-label {
+      font-size: 14px;
+      color: rgba(255,255,255,0.5);
+    }
+
+    /* Phone mockup */
+    .hero-phone {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .phone-wrapper {
+      position: relative;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    .phone-mockup {
+      width: 300px;
+      height: 620px;
+      background: linear-gradient(180deg, #1a1a2e 0%, #0f0f1a 100%);
+      border-radius: 45px;
+      padding: 12px;
+      box-shadow: 0 50px 100px rgba(0, 0, 0, 0.5),
+                  0 0 0 1px rgba(255,255,255,0.1),
+                  inset 0 0 0 1px rgba(255,255,255,0.05);
+      position: relative;
+    }
+
+    .phone-notch {
+      position: absolute;
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 130px;
+      height: 30px;
+      background: #000;
+      border-radius: 16px;
+      z-index: 10;
+    }
+
+    .phone-screen {
+      width: 100%;
+      height: 100%;
+      border-radius: 35px;
+      overflow: hidden;
+      background: linear-gradient(180deg, var(--dark) 0%, var(--dark-light) 100%);
+      padding: 55px 16px 20px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .phone-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .phone-greeting {
+      font-size: 13px;
+      color: rgba(255,255,255,0.5);
+    }
+
+    .phone-name {
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .phone-card {
+      background: rgba(255,255,255,0.08);
+      border-radius: 18px;
+      padding: 18px;
+      margin-bottom: 12px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .phone-card-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .phone-card-title {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .phone-card-subtitle {
+      font-size: 11px;
+      color: rgba(255,255,255,0.5);
+    }
+
+    .phone-progress {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .phone-ring {
+      width: 70px;
+      height: 70px;
+      border-radius: 35px;
+      border: 5px solid rgba(255,255,255,0.1);
+      border-top-color: var(--cyan);
+      border-right-color: var(--green);
+      animation: spin 3s linear infinite;
+      flex-shrink: 0;
+    }
+
+    .phone-stats {
+      flex: 1;
+    }
+
+    .phone-stat-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      padding: 4px 0;
+    }
+
+    .phone-stat-label {
+      color: rgba(255,255,255,0.5);
+    }
+
+    .phone-stat-value {
+      color: var(--cyan);
+      font-weight: 600;
+    }
+
+    .phone-ai-card {
+      background: linear-gradient(135deg, rgba(0, 217, 255, 0.15) 0%, rgba(0, 255, 148, 0.15) 100%);
+      border-color: rgba(0, 217, 255, 0.3);
+    }
+
+    .phone-ai-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .phone-ai-icon {
+      font-size: 18px;
+    }
+
+    .phone-ai-label {
+      font-size: 11px;
+      color: var(--cyan);
+      font-weight: 600;
+    }
+
+    .phone-ai-text {
+      font-size: 13px;
+      color: rgba(255,255,255,0.9);
+      margin-top: 4px;
+    }
+
+    .phone-button {
+      background: var(--gradient);
+      border: none;
+      border-radius: 14px;
+      padding: 16px;
+      width: 100%;
+      color: var(--dark);
+      font-size: 15px;
+      font-weight: 600;
+      margin-top: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .phone-glow {
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(0, 217, 255, 0.2) 0%, transparent 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: -1;
+      filter: blur(40px);
+    }
+
+    /* Features Section */
+    .features {
+      padding: 120px 0;
+      position: relative;
+    }
+
+    .features .bg-orb.orange {
+      width: 400px;
+      height: 400px;
+      top: 100px;
+      right: -100px;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 64px;
+    }
+
+    .section-label {
+      display: inline-block;
+      background: rgba(0, 217, 255, 0.1);
+      color: var(--cyan);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-size: 48px;
+      font-weight: 800;
+      margin-bottom: 16px;
+    }
+
+    .section-subtitle {
+      font-size: 20px;
+      color: rgba(255,255,255,0.6);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .feature-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 24px;
+      padding: 36px;
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--gradient);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-8px);
+      border-color: rgba(0, 217, 255, 0.3);
+      background: rgba(255,255,255,0.05);
+    }
+
+    .feature-card:hover::before {
+      opacity: 1;
+    }
+
+    .feature-icon {
+      width: 64px;
+      height: 64px;
+      background: linear-gradient(135deg, rgba(0, 217, 255, 0.15) 0%, rgba(0, 255, 148, 0.15) 100%);
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      margin-bottom: 24px;
+    }
+
+    .feature-title {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .feature-desc {
+      font-size: 15px;
+      color: rgba(255,255,255,0.6);
+      line-height: 1.6;
+    }
+
+    /* How It Works */
+    .how-it-works {
+      padding: 120px 0;
+      position: relative;
+      background: linear-gradient(180deg, transparent 0%, rgba(0, 217, 255, 0.03) 50%, transparent 100%);
+    }
+
+    .steps-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      position: relative;
+    }
+
+    .steps-container::before {
+      content: '';
+      position: absolute;
+      top: 50px;
+      left: 80px;
+      right: 80px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--cyan), var(--green));
+      opacity: 0.3;
+    }
+
+    .step {
+      text-align: center;
+      flex: 1;
+      max-width: 250px;
+      position: relative;
+    }
+
+    .step-number {
+      width: 100px;
+      height: 100px;
+      background: var(--gradient);
+      border-radius: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      margin: 0 auto 24px;
+      box-shadow: 0 20px 40px rgba(0, 217, 255, 0.3);
+    }
+
+    .step-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .step-desc {
+      font-size: 15px;
+      color: rgba(255,255,255,0.6);
+      line-height: 1.5;
+    }
+
+    /* Demo Section */
+    .demo {
+      padding: 120px 0;
+      position: relative;
+    }
+
+    .demo .bg-orb.cyan {
+      width: 500px;
+      height: 500px;
+      top: -100px;
+      left: -200px;
+    }
+
+    .demo .bg-orb.green {
+      width: 400px;
+      height: 400px;
+      bottom: -100px;
+      right: -100px;
+    }
+
+    .demo-wrapper {
+      position: relative;
+      z-index: 1;
+    }
+
+    .demo-frame {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 40px 80px rgba(0, 0, 0, 0.3);
+    }
+
+    .demo-header {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .demo-dots {
+      display: flex;
+      gap: 8px;
+    }
+
+    .demo-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.2);
+    }
+
+    .demo-dot.red { background: #ff5f56; }
+    .demo-dot.yellow { background: #ffbd2e; }
+    .demo-dot.green { background: #27ca40; }
+
+    .demo-title {
+      flex: 1;
+      text-align: center;
+      font-size: 14px;
+      color: rgba(255,255,255,0.5);
+    }
+
+    .demo-iframe-container {
+      width: 100%;
+      height: 600px;
+      position: relative;
+    }
+
+    .demo-iframe-container iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .demo-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(180deg, transparent 80%, var(--dark) 100%);
+      pointer-events: none;
+    }
+
+    .demo-cta {
+      text-align: center;
+      margin-top: 32px;
+    }
+
+    .demo-cta p {
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 16px;
+    }
+
+    /* Pricing Section */
+    .pricing {
+      padding: 120px 0;
+      position: relative;
+    }
+
+    .pricing .bg-orb.orange {
+      width: 350px;
+      height: 350px;
+      top: 50%;
+      left: -100px;
+      transform: translateY(-50%);
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 32px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .pricing-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 28px;
+      padding: 48px;
+      position: relative;
+      transition: all 0.4s ease;
+    }
+
+    .pricing-card:hover {
+      transform: translateY(-8px);
+    }
+
+    .pricing-card.featured {
+      background: linear-gradient(135deg, rgba(0, 217, 255, 0.08) 0%, rgba(0, 255, 148, 0.08) 100%);
+      border: 2px solid rgba(0, 217, 255, 0.4);
+    }
+
+    .pricing-badge {
+      position: absolute;
+      top: -14px;
+      right: 32px;
+      background: var(--gradient);
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--dark);
+    }
+
+    .pricing-name {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .pricing-desc {
+      font-size: 15px;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 24px;
+    }
+
+    .pricing-price {
+      font-size: 56px;
+      font-weight: 800;
+      margin-bottom: 32px;
+    }
+
+    .pricing-price span {
+      font-size: 18px;
+      font-weight: 400;
+      color: rgba(255,255,255,0.5);
+    }
+
+    .pricing-card.featured .pricing-price {
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .pricing-features {
+      list-style: none;
+      margin-bottom: 32px;
+    }
+
+    .pricing-features li {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      font-size: 15px;
+      color: rgba(255,255,255,0.8);
+    }
+
+    .pricing-features li::before {
+      content: '✓';
+      color: var(--green);
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    .pricing-btn {
+      width: 100%;
+      padding: 18px;
+      border-radius: 14px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .pricing-btn.primary {
+      background: var(--gradient);
+      border: none;
+      color: var(--dark);
+    }
+
+    .pricing-btn.primary:hover {
+      box-shadow: 0 15px 40px rgba(0, 217, 255, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .pricing-btn.secondary {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.3);
+      color: #fff;
+    }
+
+    .pricing-btn.secondary:hover {
+      background: rgba(255,255,255,0.1);
+    }
+
+    /* Testimonials */
+    .testimonials {
+      padding: 120px 0;
+      background: linear-gradient(180deg, transparent 0%, rgba(0, 255, 148, 0.02) 50%, transparent 100%);
+    }
+
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .testimonial-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 24px;
+      padding: 32px;
+    }
+
+    .testimonial-stars {
+      color: var(--orange);
+      font-size: 18px;
+      margin-bottom: 16px;
+    }
+
+    .testimonial-text {
+      font-size: 16px;
+      color: rgba(255,255,255,0.8);
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .testimonial-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--gradient);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .testimonial-name {
+      font-weight: 600;
+      font-size: 15px;
+    }
+
+    .testimonial-info {
+      font-size: 13px;
+      color: rgba(255,255,255,0.5);
+    }
+
+    /* CTA Section */
+    .cta {
+      padding: 120px 0;
+      position: relative;
+      text-align: center;
+    }
+
+    .cta .bg-orb.cyan {
+      width: 600px;
+      height: 600px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .cta-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .cta h2 {
+      font-size: 56px;
+      font-weight: 800;
+      margin-bottom: 24px;
+    }
+
+    .cta p {
+      font-size: 20px;
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 40px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .cta-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    /* Footer */
+    footer {
+      padding: 60px 0 30px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .footer-content {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 48px;
+      margin-bottom: 48px;
+    }
+
+    .footer-brand p {
+      color: rgba(255,255,255,0.5);
+      font-size: 14px;
+      margin-top: 16px;
+      max-width: 300px;
+    }
+
+    .footer-links h4 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: rgba(255,255,255,0.5);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .footer-links a {
+      display: block;
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      font-size: 15px;
+      padding: 8px 0;
+      transition: color 0.3s ease;
+    }
+
+    .footer-links a:hover {
+      color: var(--cyan);
+    }
+
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 30px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .footer-bottom p {
+      color: rgba(255,255,255,0.4);
+      font-size: 14px;
+    }
+
+    .footer-social {
+      display: flex;
+      gap: 16px;
+    }
+
+    .footer-social a {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .footer-social a:hover {
+      background: var(--gradient);
+      color: var(--dark);
+    }
+
+    /* Mobile Responsiveness */
+    @media (max-width: 1024px) {
+      .hero-content {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+
+      .hero-text p {
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .hero-buttons {
+        justify-content: center;
+      }
+
+      .hero-stats {
+        justify-content: center;
+      }
+
+      .hero-phone {
+        margin-top: 40px;
+      }
+
+      .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .testimonials-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-content {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+
+      .mobile-menu-btn {
+        display: block;
+      }
+
+      .hero-text h1 {
+        font-size: 40px;
+      }
+
+      .section-title {
+        font-size: 36px;
+      }
+
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .steps-container {
+        flex-direction: column;
+        gap: 48px;
+        align-items: center;
+      }
+
+      .steps-container::before {
+        display: none;
+      }
+
+      .pricing-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .demo-iframe-container {
+        height: 400px;
+      }
+
+      .cta h2 {
+        font-size: 36px;
+      }
+
+      .footer-content {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+
+      .footer-bottom {
+        flex-direction: column;
+        gap: 20px;
+      }
+    }
+
+    /* Smooth anchor scrolling */
+    [id] {
+      scroll-margin-top: 100px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav id="navbar">
+    <div class="container">
+      <a href="#" class="logo">
+        <div class="logo-icon">⚡</div>
+        <span class="logo-text">AI Weight Coach</span>
+      </a>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#how-it-works">How It Works</a>
+        <a href="#demo">Demo</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#cta" class="nav-cta">Start Free Trial</a>
+      </div>
+      <button class="mobile-menu-btn">☰</button>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="bg-orb cyan"></div>
+    <div class="bg-orb green"></div>
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-text fade-in">
+          <h1>Lose Weight with <span class="gradient-text">AI Coaching</span></h1>
+          <p>Your personal AI coach that understands what you eat, how you move, and intervenes before bad habits form. Photo-based tracking, proactive guidance, real results.</p>
+          <div class="hero-buttons">
+            <a href="#cta" class="btn-primary">
+              <span>Start 7-Day Free Trial</span>
+              <span>→</span>
+            </a>
+            <a href="#demo" class="btn-secondary">
+              <span>▶</span>
+              <span>Watch Demo</span>
+            </a>
+          </div>
+          <div class="hero-stats">
+            <div class="hero-stat">
+              <div class="hero-stat-value">10x</div>
+              <div class="hero-stat-label">Cheaper than coaches</div>
+            </div>
+            <div class="hero-stat">
+              <div class="hero-stat-value">92%</div>
+              <div class="hero-stat-label">Food detection accuracy</div>
+            </div>
+            <div class="hero-stat">
+              <div class="hero-stat-value">5 sec</div>
+              <div class="hero-stat-label">To log a meal</div>
+            </div>
+          </div>
+        </div>
+        <div class="hero-phone fade-in">
+          <div class="phone-wrapper">
+            <div class="phone-glow"></div>
+            <div class="phone-mockup">
+              <div class="phone-notch"></div>
+              <div class="phone-screen">
+                <div class="phone-header">
+                  <div class="phone-greeting">Good morning</div>
+                  <div class="phone-name">Welcome back 👋</div>
+                </div>
+                <div class="phone-card">
+                  <div class="phone-card-header">
+                    <span class="phone-card-title">Today's Calories</span>
+                    <span class="phone-card-subtitle">1,680 remaining</span>
+                  </div>
+                  <div class="phone-progress">
+                    <div class="phone-ring"></div>
+                    <div class="phone-stats">
+                      <div class="phone-stat-row">
+                        <span class="phone-stat-label">Eaten</span>
+                        <span class="phone-stat-value">820 cal</span>
+                      </div>
+                      <div class="phone-stat-row">
+                        <span class="phone-stat-label">Protein</span>
+                        <span class="phone-stat-value">45g / 120g</span>
+                      </div>
+                      <div class="phone-stat-row">
+                        <span class="phone-stat-label">Steps</span>
+                        <span class="phone-stat-value">6,240</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="phone-card phone-ai-card">
+                  <div class="phone-ai-header">
+                    <span class="phone-ai-icon">💡</span>
+                    <span class="phone-ai-label">AI Coach Tip</span>
+                  </div>
+                  <div class="phone-ai-text">Add a protein snack before dinner to hit your daily goal!</div>
+                </div>
+                <button class="phone-button">
+                  <span>📷</span>
+                  <span>Log Food</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features" id="features">
+    <div class="bg-orb orange"></div>
+    <div class="container">
+      <div class="section-header fade-in">
+        <span class="section-label">Features</span>
+        <h2 class="section-title">Everything You Need to<br><span class="gradient-text">Succeed</span></h2>
+        <p class="section-subtitle">Advanced AI technology combined with behavioral science for sustainable weight loss</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card fade-in">
+          <div class="feature-icon">📸</div>
+          <h3 class="feature-title">Photo Food Tracking</h3>
+          <p class="feature-desc">Snap a photo of your meal. AI instantly recognizes food, estimates portions, calories, and macros with 92% accuracy.</p>
+        </div>
+        <div class="feature-card fade-in">
+          <div class="feature-icon">🤖</div>
+          <h3 class="feature-title">Proactive Coaching</h3>
+          <p class="feature-desc">AI detects behavior patterns and intervenes before problems occur. Weekend overeater? Get tips on Friday.</p>
+        </div>
+        <div class="feature-card fade-in">
+          <div class="feature-icon">🎯</div>
+          <h3 class="feature-title">Realistic Goals</h3>
+          <p class="feature-desc">AI reality-checks your goals with honest timelines. No crash diets, just sustainable progress you can maintain.</p>
+        </div>
+        <div class="feature-card fade-in">
+          <div class="feature-icon">📊</div>
+          <h3 class="feature-title">Body Analysis</h3>
+          <p class="feature-desc">Upload front and side photos for AI body composition analysis. Track visual progress over time.</p>
+        </div>
+        <div class="feature-card fade-in">
+          <div class="feature-icon">⌚</div>
+          <h3 class="feature-title">Smartwatch Sync</h3>
+          <p class="feature-desc">Seamlessly integrates with Apple Health and Google Fit. Steps, sleep, and activity inform your coaching.</p>
+        </div>
+        <div class="feature-card fade-in">
+          <div class="feature-icon">📅</div>
+          <h3 class="feature-title">Weekly Check-ins</h3>
+          <p class="feature-desc">AI-powered weekly reviews celebrate wins, identify patterns, and set focus areas for the week ahead.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="how-it-works" id="how-it-works">
+    <div class="container">
+      <div class="section-header fade-in">
+        <span class="section-label">How It Works</span>
+        <h2 class="section-title">Simple as <span class="gradient-text">1-2-3</span></h2>
+        <p class="section-subtitle">Get started in minutes, see results in weeks</p>
+      </div>
+      <div class="steps-container">
+        <div class="step fade-in">
+          <div class="step-number">📋</div>
+          <h3 class="step-title">Quick Onboarding</h3>
+          <p class="step-desc">Tell us about yourself: age, weight, activity level. Optional body photo for composition analysis.</p>
+        </div>
+        <div class="step fade-in">
+          <div class="step-number">📸</div>
+          <h3 class="step-title">Snap Your Meals</h3>
+          <p class="step-desc">Just photograph your food. AI handles the rest—no more manual logging or guessing portions.</p>
+        </div>
+        <div class="step fade-in">
+          <div class="step-number">🤖</div>
+          <h3 class="step-title">Get AI Coaching</h3>
+          <p class="step-desc">Receive personalized tips, behavior insights, and proactive nudges to stay on track.</p>
+        </div>
+        <div class="step fade-in">
+          <div class="step-number">🎉</div>
+          <h3 class="step-title">See Results</h3>
+          <p class="step-desc">Track your progress with visual comparisons and celebrate milestones along the way.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Demo Section -->
+  <section class="demo" id="demo">
+    <div class="bg-orb cyan"></div>
+    <div class="bg-orb green"></div>
+    <div class="container">
+      <div class="section-header fade-in">
+        <span class="section-label">Live Demo</span>
+        <h2 class="section-title">See the <span class="gradient-text">Full Vision</span></h2>
+        <p class="section-subtitle">Explore our interactive pitch deck to understand how AI Weight Coach transforms weight loss</p>
+      </div>
+      <div class="demo-wrapper fade-in">
+        <div class="demo-frame">
+          <div class="demo-header">
+            <div class="demo-dots">
+              <div class="demo-dot red"></div>
+              <div class="demo-dot yellow"></div>
+              <div class="demo-dot green"></div>
+            </div>
+            <div class="demo-title">AI Weight Coach - Product Demo</div>
+            <div style="width: 52px;"></div>
+          </div>
+          <div class="demo-iframe-container">
+            <iframe src="pitch-deck.html" title="AI Weight Coach Pitch Deck Demo"></iframe>
+          </div>
+        </div>
+        <div class="demo-cta">
+          <p>Use arrow keys or swipe to navigate through the presentation</p>
+          <a href="pitch-deck.html" target="_blank" class="btn-secondary">
+            <span>🔗</span>
+            <span>Open Full Screen</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Section -->
+  <section class="pricing" id="pricing">
+    <div class="bg-orb orange"></div>
+    <div class="container">
+      <div class="section-header fade-in">
+        <span class="section-label">Pricing</span>
+        <h2 class="section-title">Simple, <span class="gradient-text">Transparent</span> Pricing</h2>
+        <p class="section-subtitle">Start free, upgrade when you're ready for full AI coaching power</p>
+      </div>
+      <div class="pricing-grid">
+        <div class="pricing-card fade-in">
+          <h3 class="pricing-name">Basic</h3>
+          <p class="pricing-desc">Essential tracking to get started</p>
+          <div class="pricing-price">Free</div>
+          <ul class="pricing-features">
+            <li>Food photo → calorie estimation</li>
+            <li>Daily calorie budget</li>
+            <li>Basic progress tracking</li>
+            <li>Manual corrections</li>
+          </ul>
+          <button class="pricing-btn secondary">Get Started Free</button>
+        </div>
+        <div class="pricing-card featured fade-in">
+          <div class="pricing-badge">MOST POPULAR</div>
+          <h3 class="pricing-name">Pro</h3>
+          <p class="pricing-desc">Full AI coaching experience</p>
+          <div class="pricing-price">€12.99<span>/month</span></div>
+          <ul class="pricing-features">
+            <li>Everything in Basic</li>
+            <li>Full body analysis & goal realism</li>
+            <li>Proactive AI coaching & motivation</li>
+            <li>Macro analysis & habit detection</li>
+            <li>Smartwatch integration</li>
+            <li>Weekly AI coach check-ins</li>
+          </ul>
+          <button class="pricing-btn primary">Start 7-Day Free Trial</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="testimonials">
+    <div class="container">
+      <div class="section-header fade-in">
+        <span class="section-label">Testimonials</span>
+        <h2 class="section-title">Loved by <span class="gradient-text">Early Users</span></h2>
+        <p class="section-subtitle">See what beta testers are saying about AI Weight Coach</p>
+      </div>
+      <div class="testimonials-grid">
+        <div class="testimonial-card fade-in">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text">"The photo tracking is a game-changer. I used to spend 10 minutes logging meals, now it takes seconds. And the AI actually understands my eating patterns!"</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">👩</div>
+            <div>
+              <div class="testimonial-name">Sarah M.</div>
+              <div class="testimonial-info">Lost 8kg in 3 months</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card fade-in">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text">"Finally, an app that doesn't lie to me about how fast I can lose weight. The realistic goal setting kept me motivated instead of frustrated."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">👨</div>
+            <div>
+              <div class="testimonial-name">Michael T.</div>
+              <div class="testimonial-info">Lost 12kg in 5 months</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card fade-in">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text">"The weekend warning feature is brilliant. It noticed my pattern before I did and helped me plan ahead. It's like having a coach who really knows me."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">👩</div>
+            <div>
+              <div class="testimonial-name">Emma L.</div>
+              <div class="testimonial-info">Lost 5kg in 2 months</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta" id="cta">
+    <div class="bg-orb cyan"></div>
+    <div class="container">
+      <div class="cta-content fade-in">
+        <h2>Ready to Transform<br>Your <span class="gradient-text">Health</span>?</h2>
+        <p>Join thousands of users who are losing weight sustainably with AI-powered coaching. Start your free trial today—no credit card required.</p>
+        <div class="cta-buttons">
+          <a href="#" class="btn-primary">
+            <span>Start 7-Day Free Trial</span>
+            <span>→</span>
+          </a>
+          <a href="#demo" class="btn-secondary">
+            <span>📱</span>
+            <span>See App Demo</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <a href="#" class="logo">
+            <div class="logo-icon">⚡</div>
+            <span class="logo-text">AI Weight Coach</span>
+          </a>
+          <p>Your personal AI-powered weight loss coach. Realistic goals, proactive coaching, sustainable results.</p>
+        </div>
+        <div class="footer-links">
+          <h4>Product</h4>
+          <a href="#features">Features</a>
+          <a href="#pricing">Pricing</a>
+          <a href="#demo">Demo</a>
+          <a href="#">Download</a>
+        </div>
+        <div class="footer-links">
+          <h4>Company</h4>
+          <a href="#">About Us</a>
+          <a href="#">Careers</a>
+          <a href="#">Blog</a>
+          <a href="#">Press</a>
+        </div>
+        <div class="footer-links">
+          <h4>Support</h4>
+          <a href="#">Help Center</a>
+          <a href="#">Contact</a>
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 AI Weight Coach. All rights reserved.</p>
+        <div class="footer-social">
+          <a href="#">𝕏</a>
+          <a href="#">in</a>
+          <a href="#">📷</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Navbar scroll effect
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+    });
+
+    // Fade in on scroll
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.fade-in').forEach(el => {
+      observer.observe(el);
+    });
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
